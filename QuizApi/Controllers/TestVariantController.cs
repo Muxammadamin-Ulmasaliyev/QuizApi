@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using QuizApi.Models;
 using QuizApi.Services;
 
@@ -15,7 +16,7 @@ namespace QuizApi.Controllers
             _testVariantService = testVariantService;
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("get-all")]
         public async Task<IActionResult> GetAll()
@@ -23,7 +24,22 @@ namespace QuizApi.Controllers
             return Ok(await _testVariantService.GetAll());
         }
 
+        [Authorize]
+        [HttpGet]
+        [Route("{testVariantId:int:min(1)}/get-questions")]
+        public async Task<IActionResult> GetQuestions(int testVariantId)
+        {
+            Random random = new Random();
+            var testVariant = await _testVariantService.Get(testVariantId);
+            var questions = testVariant.Questions;
+            var shuffledList = questions.OrderBy(q => random.Next()).ToList();
+            var questionsForFrontend = shuffledList.Take(10).ToList();
+            testVariant.NumberOfQuestions = questionsForFrontend.Count;
+            testVariant.Questions = questionsForFrontend;
+            return Ok(testVariant);
+        }
 
+        [Authorize]
         [HttpGet]
         [Route("{id:int:min(1)}")]
         public async Task<IActionResult> Get(int id)
@@ -36,6 +52,7 @@ namespace QuizApi.Controllers
             return NotFound(new ResponseModel() { Status = "Error", Message = $"Test variant with id : {id} not found!" });
         }
 
+        [Authorize("Admin")]
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> Create([FromForm] TestVariantModel model)
@@ -49,6 +66,7 @@ namespace QuizApi.Controllers
             return CreatedAtRoute(routeValues, createdTestVariant);
         }
 
+        [Authorize("Admin")]
         [HttpPatch]
         [Route("{id:int:min(1)}/update")]
         public async Task<IActionResult> Update(int id, [FromForm] TestVariantModel model)
@@ -57,7 +75,7 @@ namespace QuizApi.Controllers
             var updatedTestVariant = await _testVariantService.Update(id, model);
             return Ok(updatedTestVariant);
         }
-
+        [Authorize("Admin")]
         [HttpDelete]
         [Route("{id:int:min(1)}/delete")]
         public async Task<IActionResult> Delete(int id)
@@ -67,7 +85,7 @@ namespace QuizApi.Controllers
             {
                 return NoContent();
             }
-            return NotFound(new ResponseModel() { Status = "Error", Message = $"Test variant with id : {id} not found!" });
+            return NotFound(new ResponseModel() { Status = "Error", Message = $"Test variant with id : {id} not found! OR This TestVariatn have existing Questions, first delete all questions than retry!!!" });
         }
     }
 }

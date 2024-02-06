@@ -22,8 +22,8 @@ builder.Services.AddIdentity<AppUser, IdentityRole>()
 
 builder.Services.AddAuthorization(options =>
 {
-    options.AddPolicy("AdminPolicy", policy =>
-        policy.RequireRole("ADMIN"));
+    options.AddPolicy("Admin", policy =>
+        policy.RequireRole("Admin"));
 });
 
 builder.Services.AddAuthentication(options =>

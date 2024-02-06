@@ -14,12 +14,15 @@ namespace QuizApi.Controllers
     public class AuthController : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IConfiguration _configuration;
 
-        public AuthController(UserManager<AppUser> userManager, IConfiguration configuration)
+        public AuthController(UserManager<AppUser> userManager, IConfiguration configuration, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _configuration = configuration;
+            _roleManager = roleManager;
+
         }
 
         [Route("register")]
@@ -29,7 +32,7 @@ namespace QuizApi.Controllers
         [ProducesResponseType(typeof(ResponseModel), 200)]
 
         public async Task<IActionResult> Register(RegisterModel registerModel)
-        {
+            {
             var foundUser = await _userManager.FindByNameAsync(registerModel.Username);
 
             if (foundUser != null)
@@ -51,7 +54,7 @@ namespace QuizApi.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new ResponseModel { Status = "Error", Message = "User creation failed! Password must contain lower, upper, symbols characters" });
             }
 
-            /*
+          /*  
 			var roleExists = await _roleManager.RoleExistsAsync("Admin");
 			if (!roleExists)
 			{
@@ -91,6 +94,7 @@ namespace QuizApi.Controllers
 
                 return Ok(new
                 {
+                    isAdmin = roles.Contains("Admin"),
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     expiration = token.ValidTo
                 });

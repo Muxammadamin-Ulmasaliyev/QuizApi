@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizApi.Domain;
 
@@ -10,9 +11,11 @@ using QuizApi.Domain;
 namespace QuizApi.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240119131816_test2")]
+    partial class test2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -266,11 +269,12 @@ namespace QuizApi.Domain.Migrations
                     b.Property<DateTime>("SolvedAt")
                         .HasColumnType("datetime(6)");
 
-                    b.Property<int>("TestVariantId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("TestVariantName")
+                    b.Property<string>("TestVariantId")
+                        .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<int>("TestVariantId1")
+                        .HasColumnType("int");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");
@@ -287,7 +291,7 @@ namespace QuizApi.Domain.Migrations
 
                     b.HasIndex("AppUserId");
 
-                    b.HasIndex("TestVariantId");
+                    b.HasIndex("TestVariantId1");
 
                     b.ToTable("TestResults");
                 });
@@ -380,7 +384,7 @@ namespace QuizApi.Domain.Migrations
 
                     b.HasOne("QuizApi.Domain.Entities.TestVariant", "TestVariant")
                         .WithMany("TestResults")
-                        .HasForeignKey("TestVariantId")
+                        .HasForeignKey("TestVariantId1")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

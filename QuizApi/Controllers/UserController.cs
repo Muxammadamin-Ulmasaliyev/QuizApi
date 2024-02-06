@@ -8,7 +8,6 @@ using QuizApi.Models;
 
 namespace QuizApi.Controllers
 {
-    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
 
@@ -20,7 +19,7 @@ namespace QuizApi.Controllers
             _userManager = userManager;
         }
 
-
+        [Authorize]
         [Route("update-user-profile")]
         [HttpPatch]
         [ProducesResponseType(typeof(ResponseModel), 404)]
@@ -49,6 +48,7 @@ namespace QuizApi.Controllers
 
         }
 
+        [Authorize]
         [Route("my-profile")]
         [HttpGet]
         [ProducesResponseType(typeof(UserProfileModel), 200)]
@@ -69,8 +69,7 @@ namespace QuizApi.Controllers
 
         }
 
-
-        [AllowAnonymous]
+        [Authorize("Admin")]
         [Route("all-users")]
         [HttpGet]
         [ProducesResponseType(typeof(IEnumerable<UserProfileModel>), 200)]
@@ -84,6 +83,35 @@ namespace QuizApi.Controllers
             }
             return Ok(models);
 
+        }
+
+        [Authorize("Admin")]
+        [HttpDelete]
+        [Route("{username}/delete")]
+
+        public async Task<IActionResult> RemoveUser(string username)
+        {
+            var user = await _userManager.FindByNameAsync(username);
+
+            if (user != null)
+            {
+                var result = await _userManager.DeleteAsync(user);
+
+                if (result.Succeeded)
+                {
+                    return Ok(new ResponseModel { Status = "Success", Message = "User removed successfully" });
+                }
+                else
+                {
+                    // Handle errors if the user deletion fails
+                    return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Message = "Failed to remove user" });
+                }
+            }
+            else
+            {
+                // User with the specified username not found
+                return NotFound(new ResponseModel { Status = "Error", Message = "User not found" });
+            }
         }
 
         [NonAction]

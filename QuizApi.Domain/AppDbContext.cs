@@ -13,7 +13,7 @@ namespace QuizApi.Domain
 
         public DbSet<TestVariant> TestVariants { get; set; }
         public DbSet<Question> Questions { get; set; }
-        public DbSet<Scores> Scores { get; set; }
+        public DbSet<TestResult> TestResults { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

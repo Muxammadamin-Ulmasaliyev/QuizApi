@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QuizApi.Models;
 using QuizApi.Services;
@@ -15,7 +16,7 @@ namespace QuizApi.Controllers
             _questionService = questionService;
         }
 
-
+        [Authorize]
         [HttpGet]
         [Route("get-all")]
         public async Task<IActionResult> GetAll()
@@ -23,9 +24,9 @@ namespace QuizApi.Controllers
             return Ok(await _questionService.GetAll());
         }
 
-       
 
 
+        [Authorize]
         [HttpGet]
         [Route("{id:int:min(1)}")]
         public async Task<IActionResult> Get(int id)
@@ -38,6 +39,7 @@ namespace QuizApi.Controllers
             return NotFound(new ResponseModel() { Status = "Error", Message = $"Question with id : {id} not found!" });
         }
 
+        [Authorize("Admin")]
         [HttpPost]
         [Route("create")]
         public async Task<IActionResult> Create([FromForm] QuestionModel model)
@@ -51,6 +53,7 @@ namespace QuizApi.Controllers
             return CreatedAtRoute(routeValues, createdQuestion);
         }
 
+        [Authorize("Admin")]
         [HttpPatch]
         [Route("{id:int:min(1)}/update")]
         public async Task<IActionResult> Update(int id, [FromForm] QuestionModel model)
@@ -60,6 +63,7 @@ namespace QuizApi.Controllers
             return Ok(updatedQuestion);
         }
 
+        [Authorize("Admin")]
         [HttpDelete]
         [Route("{id:int:min(1)}/delete")]
         public async Task<IActionResult> Delete(int id)

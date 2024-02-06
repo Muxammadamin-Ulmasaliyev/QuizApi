@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizApi.Domain;
 
@@ -10,9 +11,11 @@ using QuizApi.Domain;
 namespace QuizApi.Domain.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240119154440_qewqewqew")]
+    partial class qewqewqew
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -268,9 +271,6 @@ namespace QuizApi.Domain.Migrations
 
                     b.Property<int>("TestVariantId")
                         .HasColumnType("int");
-
-                    b.Property<string>("TestVariantName")
-                        .HasColumnType("longtext");
 
                     b.Property<int>("TotalScore")
                         .HasColumnType("int");

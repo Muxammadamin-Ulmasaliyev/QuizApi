@@ -10,6 +10,7 @@ namespace QuizApi.Models
         [Required]
         public string Name { get; set; }
         public string? Description { get; set; }
+        public int NumberOfQuestions { get; set; }
 
         public List<Question>? Questions { get; set; }
     }

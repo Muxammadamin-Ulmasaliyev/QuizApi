@@ -13,5 +13,7 @@ namespace QuizApi.Domain.Entities
         public string? Description { get; set; }
         [JsonIgnore]
         public List<Question>? Questions { get; set; }
+        [JsonIgnore]
+        public List<TestResult> TestResults { get; set; }
     }
 }

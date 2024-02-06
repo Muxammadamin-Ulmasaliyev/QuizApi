@@ -33,7 +33,8 @@ namespace QuizApi.MapProfiles
                 Id = testVariant.Id,
                 Name = testVariant.Name,
                 Description = testVariant.Description,
-                Questions = testVariant.Questions
+                Questions = testVariant.Questions,
+                NumberOfQuestions = testVariant.Questions != null ? testVariant.Questions.Count() : 0,
 
             };
         }
@@ -65,6 +66,35 @@ namespace QuizApi.MapProfiles
                 CorrectAnswer = question.CorrectAnswer,
                 TestVariantId = question.TestVariantId,
                 TestVariant = question.TestVariant
+            };
+        }
+
+        public static TestResult Map(TestResultModel model)
+        {
+            return new TestResult()
+            {
+                Id = model.Id,
+                UserId = model.AppUser.Id,
+                Username = model.AppUser.UserName,
+                TotalScore = model.TotalScore,
+                SolvedAt = DateTime.Now,
+                TestVariantId = model.TestVariantId,
+                TestVariantName = model.TestVariantName
+
+            };
+        }
+
+        public static TestResultModel Map(TestResult testResult)
+        {
+            return new TestResultModel()
+            {
+                Id = testResult.Id,
+                UserId = testResult.UserId,
+                Username = testResult.Username,
+                TotalScore = testResult.TotalScore,
+                SolvedAt = testResult.SolvedAt,
+                TestVariantId = testResult.TestVariantId,
+                TestVariantName = testResult.TestVariantName
             };
         }
     }
